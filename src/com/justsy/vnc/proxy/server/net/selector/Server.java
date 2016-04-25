@@ -1,5 +1,6 @@
 package com.justsy.vnc.proxy.server.net.selector;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -24,10 +25,10 @@ public class Server implements Runnable {
         return INSTANCE;
     }
 
-    public void init(int port)
+    public void init(String ip, int port)
             throws Exception {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(port));
+        serverSocketChannel.socket().bind(new InetSocketAddress(InetAddress.getByName(ip), port));
         serverSocketChannel.configureBlocking(false);
 
         selector = Selector.open();

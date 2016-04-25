@@ -6,11 +6,18 @@ import com.justsy.vnc.proxy.server.main.connection.ControlledVncConnection;
 import com.justsy.vnc.proxy.server.main.connection.ControllerVncConnection;
 import com.justsy.vnc.proxy.server.main.connection.VncConnection;
 import com.justsy.vnc.proxy.server.main.manager.VncConnectionManager;
+import com.justsy.vnc.proxy.server.main.util.PushUtil;
 import com.justsy.vnc.proxy.server.net.connection.Connection;
 import com.justsy.vnc.proxy.server.net.handler.AbstractHandler;
 
 public class VncConnectionHandler extends AbstractHandler {
     private final VncConnectionManager vncConnectionManager = VncConnectionManager.getInstance();
+
+    private final String ip;
+
+    public VncConnectionHandler(String ip) {
+        this.ip = ip;
+    }
 
     @Override
     public void onException(Connection connection, Exception e)
@@ -59,7 +66,12 @@ public class VncConnectionHandler extends AbstractHandler {
         vncConnectionManager.addControllerVncConnection(controllerVncConnection);
         responseAndSetWritable(controllerVncConnection, VncConnection.STATUS_ESTABLISHING, VncConnection.RESPONSE_OK);
 
-        // TODO: 2016/4/16 调用推送接口
+        PushUtil.push(
+                ip,
+                controllerVncConnection.getUser(),
+                controllerVncConnection.getDeviceId(),
+                controllerVncConnection.getNeedConfirm(),
+                controllerVncConnection.getMagic());
         return true;
     }
 

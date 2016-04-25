@@ -6,12 +6,16 @@ import com.justsy.vnc.proxy.server.net.selector.Server;
 
 public class Main {
     public static void main(String[] args) {
+        if (1 != args.length)
+            return;
+        String ip = args[0];
+
         try {
             HandlerManager handlerManager = HandlerManager.getInstance();
-            handlerManager.addHandler(new VncConnectionHandler());
+            handlerManager.addHandler(new VncConnectionHandler(ip));
 
             Server server = Server.getInstance();
-            server.init(5900);
+            server.init(ip, 5900);
             new Thread(server).start();
         } catch (Exception ignore) {
             System.exit(-1);
